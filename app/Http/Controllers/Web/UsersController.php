@@ -32,26 +32,26 @@ class UsersController extends Controller
         $queryBuilder = $deleted ? User::onlyTrashed() : User::withoutTrashed();
 
 
-        $queryBuilder->select($campos)
-            ->join('role_users', 'role_users.user_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'role_users.role_id')
+
+            $queryBuilder =  $queryBuilder->select($campos)
+            ->join('role_users', 'users.id', '=', 'role_users.user_id')
+            ->join('roles', 'role_users.role_id', '=','roles.id')
             ->orderBy($orderBy, $order);
 
-        if ($query = $request->get('query', false)) {
-            $queryBuilder->where(function ($q) use ($query) {
-                $q->where('nombre', 'like', '%' . $query . '%');
-            });
-        }
+           if ( $query = $request->input('query', false) ){
+               $queryBuilder-> where(function ($q) use ($query){
+                   $q-> where('users.nombre', 'like', '%'.$query.'%')
+                       -> orwhere('email', 'like', '%'.$query.'%');
+               });
+           }
 
+           if( $perPage = $request->input('perPage', false) ) {
+              $data = $queryBuilder->paginate($perPage);
+           }else{
+               $data = $queryBuilder->get();
+           }
+       return response()->success($data);
 
-        if ($perPage = $request->input('perPage', false)) {
-            $data = $queryBuilder->paginate($perPage);
-        } else {
-            $data = $queryBuilder->get();
-        }
-
-
-        return response()->success(['data' => $data]);
     }
 
     public function store(UsersRequest $request)
