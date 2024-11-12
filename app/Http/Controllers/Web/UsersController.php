@@ -32,28 +32,6 @@ class UsersController extends Controller
         $queryBuilder = $deleted ? User::onlyTrashed() : User::withoutTrashed();
 
 
-<<<<<<< Updated upstream
-        $queryBuilder->select($campos)
-            ->join('role_users', 'role_users.user_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'role_users.role_id')
-            ->orderBy($orderBy, $order);
-
-        if ($query = $request->get('query', false)) {
-            $queryBuilder->where(function ($q) use ($query) {
-                $q->where('nombre', 'like', '%' . $query . '%');
-            });
-        }
-
-
-        if ($perPage = $request->input('perPage', false)) {
-            $data = $queryBuilder->paginate($perPage);
-        } else {
-            $data = $queryBuilder->get();
-        }
-
-
-        return response()->success(['data' => $data]);
-=======
 
             $queryBuilder =  $queryBuilder->select($campos)
             ->join('role_users', 'users.id', '=', 'role_users.user_id')
@@ -74,7 +52,6 @@ class UsersController extends Controller
            }
        return response()->success($data);
 
->>>>>>> Stashed changes
     }
 
     public function store(UsersRequest $request)

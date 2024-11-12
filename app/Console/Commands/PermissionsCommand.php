@@ -40,11 +40,7 @@ class PermissionsCommand extends Command
      */
     public function handle()
     {
-<<<<<<< Updated upstream
-        $roles = Role::select('name')->orderBy('id')->get();
-=======
         $roles = Role::query()->select('name')->orderBy('id')->get();
->>>>>>> Stashed changes
 
         $procesos = array('Salir');
 
